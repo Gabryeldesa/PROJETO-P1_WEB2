@@ -1,0 +1,30 @@
+{
+  "name": "projetop1",
+  "version": "1.0.0",
+  "description": "* Node.js 22 ou superior - Conferir a versão: node -v\r * MySQL 8 ou superior - Conferir a versão: mysql --version",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "watch": "tsc -watch",
+    "start:watch": "concurrently \"npm run watch\" \"node --watch dist/index.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mysql2": "^3.23.4",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.15.2",
+    "concurrently": "^10.0.5",
+    "ts-node": "^10.9.2"
+  }
+}
