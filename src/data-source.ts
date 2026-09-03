@@ -1,5 +1,9 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
+import dotenv from 'dotenv';
+dotenv.config();
+import { Users } from "./entity/Users";
+import { Situations } from "./entity/Situations";
 
 
 const dialect = process.env.DB_DIALECT ?? "mysql";
@@ -13,7 +17,13 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE,
     synchronize: false,
     logging: true,
-    entities: [],
+    entities: [Situations, Users],
     subscribers: [],
-    migrations: [],
+    migrations: [__dirname + "/migration/*.js"],
 })
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log('conexão do banco de dados realizado com sucesso!');
+  })
+  .catch((error) => console.log('Erro na conexão com o banco de dados', error));

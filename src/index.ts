@@ -5,9 +5,14 @@ dotenv.config();
 
 const app = express();
 
-import login from './controllers/login';
+app.use(express.json());
 
-app.use('/', login);
+import AuthController from './controllers/AuthController';
+import SituationsController from './controllers/SituationsController';
+
+app.use('/', SituationsController);
+
+app.use('/', AuthController);
 
 
 app.listen(process.env.PORT, () => {
