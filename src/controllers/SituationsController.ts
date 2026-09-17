@@ -44,7 +44,7 @@ router.get("/situations/:id", async (req:Request, res:Response)=>{
 
   }catch(error){
     res.status(500).json({
-      messagem : "Erro ao Listar situação!",
+      messagem : "Erro ao listar situação!",
     });
     return
   }
@@ -75,5 +75,75 @@ router.post('/situations', async(req: Request, res: Response) => {
 
   }
 });
+
+//Criar a Visualização do item cadastrado em situação
+router.put("/situations/:id", async (req:Request, res:Response)=>{
+  try{
+
+    const { id } = req.params as { id: string };
+
+    const data = req.body;
+
+    const situationRepository = AppDataSource.getRepository(Situations);
+
+    const situation = await situationRepository.findOneBy({id : parseInt(id)});
+
+    if(!situation){
+      res.status(404).json({
+        messagem : "Situação não encontrada!",
+      });
+      return
+    }
+
+    situationRepository.merge(situation, data);
+    const updatedSituation = await situationRepository.save(situation);
+
+    res.status(200).json({
+      message: 'Situação atualizada com sucesso!',
+      situation: updatedSituation,
+    });
+    return
+
+  }catch(error){
+    res.status(500).json({
+      messagem : "Erro ao atualizar situação!",
+    });
+    return
+  }
+});
+
+router.delete("/situations/:id", async (req:Request, res:Response)=>{
+  try{
+
+    const { id } = req.params as { id: string };
+    
+
+    const situationRepository = AppDataSource.getRepository(Situations);
+
+    const situation = await situationRepository.findOneBy({id : parseInt(id)});
+
+    if(!situation){
+      res.status(404).json({
+        messagem : "Situação não encontrada!",
+      });
+      return
+    }
+
+    await situationRepository.remove(situation);
+
+    res.status(200).json({
+      message: 'Situação removida com sucesso!',
+
+    }); 
+  
+  }catch(error){
+    res.status(500).json({
+      messagem : "Erro ao remover situação!",
+    });
+    return
+  }
+});
+
+
 
 export default router;
