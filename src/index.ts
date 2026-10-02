@@ -5,6 +5,8 @@ dotenv.config();
 
 const app = express();
 
+app.set('json spaces', 2);
+
 app.use(express.json());
 
 import AuthController from './controllers/AuthController';
