@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { Users } from "./entity/Users";
 import { Situations } from "./entity/Situations";
+import { ProductCategories } from "./entity/ProductCategories";
+import { ProductSituations } from "./entity/ProductSituations";
+import { Products } from "./entity/Products";
 
 
 const dialect = process.env.DB_DIALECT ?? "mysql";
@@ -17,7 +20,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE,
     synchronize: false,
     logging: true,
-    entities: [Situations, Users],
+    entities: [Situations, Users, ProductCategories, ProductSituations, Products],
     subscribers: [],
     migrations: [__dirname + "/migration/*.js"],
 })
