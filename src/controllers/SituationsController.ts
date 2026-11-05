@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import { AppDataSource } from '../data-source';
 import { Situations } from '../entity/Situations';
 import { PaginationService } from '../services/PaginationService';
+import * as yup from 'yup';
+import { Not } from 'typeorm';
 
 const router = express.Router();
 
@@ -63,7 +65,27 @@ router.post('/situations', async(req: Request, res: Response) => {
 
     const data = req.body;
 
+    const schema = yup.object().shape({
+      nameSituation: yup.string().required('O campo nome é obrigatório.')
+      .min(3, 'O campo nome deve ter no mínimo 3 caracteres.'),
+    });
+
+    await schema.validate(data, { abortEarly: false });
+
     const situationRepository = AppDataSource.getRepository(Situations);
+
+    const existingSituation = await situationRepository.findOne({
+      where: {nameSituation: data.nameSituation}
+    });
+
+    if (existingSituation) {
+      res.status(400).json({
+        message: 'Já existe uma situação cadastrada com esse nome.',
+      });
+      return;
+    }
+
+
     const situation = situationRepository.create(data);
 
     await situationRepository.save(situation);
@@ -75,6 +97,15 @@ router.post('/situations', async(req: Request, res: Response) => {
 
     
   } catch (error) {
+
+    if (error instanceof yup.ValidationError) {
+      res.status(500).json({
+      message: error.errors
+      });
+      return;
+  
+    }
+
 
     res.status(500).json({
       message: 'Erro ao cadastrar situação.',
@@ -92,6 +123,14 @@ router.put("/situations/:id", async (req:Request, res:Response)=>{
 
     const data = req.body;
 
+    const schema = yup.object().shape({
+      nameSituation: yup.string().required('O campo nome é obrigatório.')
+      .min(3, 'O campo nome deve ter no mínimo 3 caracteres.'),
+    });
+
+    await schema.validate(data, { abortEarly: false });
+
+
     const situationRepository = AppDataSource.getRepository(Situations);
 
     const situation = await situationRepository.findOneBy({id : parseInt(id)});
@@ -103,6 +142,21 @@ router.put("/situations/:id", async (req:Request, res:Response)=>{
       return
     }
 
+     const existingSituation = await situationRepository.findOne({
+      where: {
+        nameSituation: data.nameSituation,
+        id: Not(parseInt(id)),
+      }
+    });
+
+    if (existingSituation) {
+      res.status(400).json({
+        message: 'Já existe uma situação cadastrada com esse nome.',
+      });
+      return;
+    }
+
+
     situationRepository.merge(situation, data);
     const updatedSituation = await situationRepository.save(situation);
 
@@ -113,10 +167,20 @@ router.put("/situations/:id", async (req:Request, res:Response)=>{
     return
 
   }catch(error){
+
+    if (error instanceof yup.ValidationError) {
+      res.status(500).json({
+      message: error.errors
+      });
+      return;
+  
+    }
+
+
     res.status(500).json({
       messagem : "Erro ao atualizar situação!",
     });
-    return
+  
   }
 });
 
