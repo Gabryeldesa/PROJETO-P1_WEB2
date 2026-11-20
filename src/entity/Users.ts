@@ -4,13 +4,19 @@ import { Situations } from "./Situations"
 @Entity("Users")
 export class Users {
     @PrimaryGeneratedColumn()
-    id!: number
+    id!: number;
 
     @Column()
-    name!: string
+    name!: string;
+
+    @Column({ unique: true })
+    slug!: string;
+
+    @Column()
+    email!: string;
 
     @Column({unique: true})
-    email!: string
+    password!: string;
 
     @ManyToOne(() => Situations, (situation) => situation.users)
     @JoinColumn({ name: "situation_id" })

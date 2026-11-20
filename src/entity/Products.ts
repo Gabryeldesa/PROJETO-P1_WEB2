@@ -10,6 +10,9 @@ export class Products {
     @Column({ type: "varchar", length: 255 })
     name!: string
 
+    @Column({ unique: true })
+    slug!: string;
+
     @Column()
     productSituationId!: number
 

@@ -19,6 +19,7 @@
     "express": "^5.2.1",
     "mysql2": "^3.23.4",
     "reflect-metadata": "^0.2.2",
+    "slugify": "^1.6.9",
     "typeorm": "^1.1.0",
     "yup": "^1.7.1"
   },
